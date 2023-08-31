@@ -11,7 +11,7 @@
 #include"ADC_privet.h"
  static void (*ADC_pfnotfictation)(void)=NULL;
  static u8 ADC_u8Busyflag=0;
-u8 ADC_voidint()
+ void ADC_voidInit()
 {
     CLR_BIT(ADC_u8_ADMUX_REG,ADC_REFS1_PIN);
     SET_BIT(ADC_u8_ADMUX_REG,ADC_REFS0_PIN);
@@ -31,7 +31,7 @@ u8 ADC_u8_GetDigitalValueSynchNonBlocking(u8 copy_u8channeINb,u16 *copy_pu16Digi
 {
     u8 local_u8ErrorState=STD_TYBES_OK;
     u32 local_u32TimeOutCounter=0;
-    if((copy_u8channeINb< 32)&&(copy_pu16Digitalvalue!=NULL))
+    if((copy_u8channeINb < 32)&&(copy_pu16Digitalvalue != NULL))
     {
        /* Clear MUX4..0 */
 
@@ -39,13 +39,13 @@ ADC_u8_ADMUX_REG &= 0b11100000;
 
 /* Select Channel */
 
-ADC_u8_ADMUX_REG = copy_u8channeINb;
+ADC_u8_ADMUX_REG |= copy_u8channeINb;
 
 /* Start Conversion */
 
 SET_BIT (ADC_u8_ADCSRA_REG, ADC_ADSC_PIN); /* Wait flag = 1 */
 
-while ((GET_BIT (ADC_u8_ADCSRA_REG, ADC_ADIF_PIN) == 0)&& (local_u32TimeOutCounter <ADC_u32_TIME_OUT_MAX_VALUE))
+while ((GET_BIT (ADC_u8_ADCSRA_REG, ADC_ADIF_PIN)==0)&& (local_u32TimeOutCounter <ADC_u32_TIME_OUT_MAX_VALUE))
 {
  local_u32TimeOutCounter++;
 }
@@ -93,7 +93,7 @@ SET_BIT(ADC_u8_ADCSRA_REG,ADC_ADSC_PIN);
 else{local_u8ErrorState=STD_TYBES_NOK;}
 
 return local_u8ErrorState;}
-ADC_u8GetADCRegValue                  (u16 * copy_pu16ADCvalue)
+ u8 ADC_u8GetADCRegValue                    (u16 *copy_pu16ADCvalue)
 {
    u8 local_u8ErrorState=STD_TYBES_OK;
     if(copy_pu16ADCvalue!=NULL)
@@ -104,14 +104,14 @@ ADC_u8GetADCRegValue                  (u16 * copy_pu16ADCvalue)
     return local_u8ErrorState;
 }
 
-void __vector_16(void)    __attribute__((signal))
+void __vector_16(void)    __attribute__((signal));
 void __vector_16(void)
 {
     if(ADC_pfnotfictation!=NULL)
     {
         ADC_u8Busyflag=0;
         CLR_BIT(ADC_u8_ADCSRA_REG,ADC_ADIE_PIN);
-        ADC_pfnotfictation(ADC_u16_ADC_REG);
+        ADC_pfnotfictation();
     }
 
 }

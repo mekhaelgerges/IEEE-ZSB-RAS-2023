@@ -6,5 +6,5 @@
  /******************************************************/
 #ifndef ADC_CONFIG_H
 #define  ADC_CONFIG_H
-#define ADC_u32_TIME_OUT_MAX_VALUE     5000
+#define ADC_u32_TIME_OUT_MAX_VALUE     50000
 #endif
